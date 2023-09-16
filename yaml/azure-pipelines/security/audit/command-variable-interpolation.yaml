@@ -1,0 +1,34 @@
+rules:
+  - id: command-variable-interpolation
+    languages: [yaml]
+    severity: WARNING
+    message: >-
+      Detected variable interpolation in Auzre Pipeline script step.
+      Place the variable in an environment variable to avoid the risk of code injection.
+    metadata:
+      cwe: CWE-77
+    patterns:
+      - pattern-inside: |
+          steps:
+            ...
+
+      - pattern-inside: |
+          steps: [..., $STEP, ...]
+
+      - pattern-inside: |
+          $STEP
+
+      - pattern-either:
+          - pattern: |
+              bash: "=~/.*/"
+
+          - pattern: |
+              powershell: "=~/.*/"
+
+          - pattern: |
+              script: "=~/.*/"
+
+      - pattern-regex: >-
+         (\$\([a-z0-9._]+\)|\$\{\{[^\}\n]+\}\})
+
+      - focus-metavariable: $1

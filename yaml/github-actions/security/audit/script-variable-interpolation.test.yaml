@@ -1,0 +1,29 @@
+name: script-variable-interpolation
+
+on:
+  push:
+
+jobs:
+  injection:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@00f12e3e20659f42342b1c0226afda7f7c042325 # v6
+        with:
+          script: |
+            # ruleid: script-variable-interpolation
+            console.log("${{steps.set-result.outputs.result}}")
+
+      - uses: actions/github-script@00f12e3e20659f42342b1c0226afda7f7c042325 # v6
+        with:
+          script: |
+            # ruleid: script-variable-interpolation
+            console.log("${{steps.set-result.outputs.result}}")
+
+      - uses: actions/github-script@v6
+        env:
+          INPUT_RESULT: ${{steps.set-result.outputs.result}}
+        with:
+          script: |
+            # ok: script-variable-interpolation
+            const {INPUT_RESULT} = process.env;
+            console.log(`${INPUT_RESULT}`)

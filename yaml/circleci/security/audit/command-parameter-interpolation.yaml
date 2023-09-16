@@ -1,0 +1,43 @@
+rules:
+  - id: command-parameter-interpolation
+    languages: [yaml]
+    severity: WARNING
+    message: >-
+      Detected variable interpolation in CircleCI `run` step.
+      Place the variable in an environment variable to avoid the risk of code injection.
+    metadata:
+      cwe: "CWE-77: Improper Neutralization of Special Elements used in a Command ('Command Injection')"
+      category: security
+      technology:
+        - circleci
+        - ci
+      confidence: LOW
+      likelihood: LOW
+      impact: MEDIUM
+      subcategory:
+        - audit
+      references:
+        - https://securitylab.github.com/research/github-actions-untrusted-input/
+    paths:
+      include:
+        - .circleci/config.yml
+        - command-parameter-interpolation.test.yaml
+    patterns:
+      - pattern-either:
+          - pattern: |
+              run: "=~/.*<<.*/"
+
+          - patterns:
+              - pattern-inside: |
+                  run: ...
+
+              - pattern: |
+                  command: "=~/.*<<.*/"
+
+      - pattern-not-inside: |
+          environment: ...
+
+      - pattern-regex: >-
+          .*(<<[^>]+>>).*
+
+      - focus-metavariable: $1

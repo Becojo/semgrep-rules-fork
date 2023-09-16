@@ -1,0 +1,38 @@
+name: command-variable-interpolation
+
+on:
+  push:
+
+jobs:
+  injection:
+    runs-on: ubuntu-latest
+    steps:
+      # ruleid: command-variable-interpolation
+      - run: echo ${{ inputs.foo }}
+
+      - run: |
+          # ruleid: command-variable-interpolation
+          echo ${{ inputs.foo }}
+
+      - env:
+          INPUT_FOO: ${{ inputs.foo }}
+        run: |
+          # ok: command-variable-interpolation
+          echo "$INPUT_FOO"
+
+      - uses: org/action@v1
+        with:
+          # ok: command-variable-interpolation
+          run: ${{ inputs.foo }}
+
+      - uses: org/action@v1
+        with:
+          # ok: command-variable-interpolation
+          run: |
+            ${{ inputs.foo }}
+
+      - uses: org/action@v1
+        env:
+          # ok: command-variable-interpolation
+          run: |
+            ${{ inputs.foo }}

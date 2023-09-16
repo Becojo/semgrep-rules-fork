@@ -1,0 +1,22 @@
+steps:
+  # ruleid: command-variable-interpolation
+  - command: echo $BUILDKITE_BRANCH
+
+  # ruleid: command-variable-interpolation
+  - command: echo ${BUILDKITE_BRANCH}
+
+  # ok: command-variable-interpolation
+  - command: echo $$BUILDKITE_BRANCH
+
+  - commands:
+    # ruleid: command-variable-interpolation
+    - "build.sh $BUILDKITE_BRANCH"
+
+    # ruleid: command-variable-interpolation
+    - "build.sh ${BUILDKITE_BRANCH}"
+
+    # ok: command-variable-interpolation
+    - "build.sh $$BUILDKITE_BRANCH"
+
+    # ok: command-variable-interpolation
+    - "build.sh $(ls)"

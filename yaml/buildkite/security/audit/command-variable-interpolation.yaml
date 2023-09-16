@@ -1,0 +1,41 @@
+rules:
+  - id: command-variable-interpolation
+    languages: [yaml]
+    severity: WARNING
+    message: >-
+      Detected an environment variable interpolated at compile-time in a BuildKite command.
+      If the variable is intended to be evaluated at runtime, escape the variable by using 2 dollar signs (`$$VARIABLE`).
+      Consider using a script instead of a command with variables in it contains sensitive information to BuildKite.
+    metadata:
+      cwe: "CWE-77: Improper Neutralization of Special Elements used in a Command ('Command Injection')"
+      category: security
+      technology:
+        - buildkite
+      confidence: LOW
+      likelihood: LOW
+      impact: MEDIUM
+      subcategory:
+        - audit
+      references:
+        - "https://buildkite.com/docs/pipelines/environment-variables#variable-interpolation"
+    paths:
+      include:
+        - .buildkite/
+        - command-variable-interpolation.test.yaml
+    patterns:
+      - pattern-inside: |
+          steps: ...
+
+      - pattern-either:
+          - pattern: |
+              command: "=~/.*[^\\$]\\$.*/"
+
+          - patterns:
+              - pattern-inside: |
+                  commands: ...
+
+              - pattern: |
+                  "=~/.*[^\\$]\\$[^\\$].*/"
+
+      - pattern-regex: >-
+          [^\$]\$(\{[^\}]+\}|[a-zA-Z0-9][a-zA-Z0-9_]*)

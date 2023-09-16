@@ -1,0 +1,23 @@
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#understand-variable-syntax
+variables:
+- name: one
+  value: initialValue
+
+steps:
+  - script: |
+      # ruleid: command-variable-interpolation
+      echo ${{ variables.one }}
+      # ruleid: command-variable-interpolation
+      echo $(one)
+
+  - powershell: |
+      # ruleid: command-variable-interpolation
+      echo ${{ variables.one }}
+      # ruleid: command-variable-interpolation
+      echo $(one)
+
+  - bash: |
+      # ruleid: command-variable-interpolation
+      echo ${{ variables.one }}
+      # ruleid: command-variable-interpolation
+      echo $(one)

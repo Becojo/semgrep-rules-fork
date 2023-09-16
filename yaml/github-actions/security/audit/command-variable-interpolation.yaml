@@ -1,0 +1,48 @@
+rules:
+  - id: command-variable-interpolation
+    languages: [yaml]
+    severity: WARNING
+    message: >-
+      Detected variable interpolation in GitHub Actions worfklow `run` step.
+      Place the variable in an environment variable to avoid the risk of code injection.
+    metadata:
+      cwe: "CWE-77: Improper Neutralization of Special Elements used in a Command ('Command Injection')"
+      category: security
+      technology:
+        - github-actions
+      confidence: LOW
+      likelihood: LOW
+      impact: MEDIUM
+      subcategory:
+        - audit
+      references:
+        - "https://securitylab.github.com/research/github-actions-untrusted-input/"
+    paths:
+      include:
+        - .github/
+        - action.yaml
+        - action.yaml
+        - command-variable-interpolation.test.yaml
+    patterns:
+      - pattern-inside: |
+          jobs:
+            ...
+      - pattern-inside: |
+          steps: [..., $STEP, ...]
+
+      - pattern-inside: |
+          $STEP
+
+      - pattern: |
+          run: "=~/.*(\\$\\{\\{).*/"
+
+      - pattern-not-inside: |
+          with: ...
+
+      - pattern-not-inside: |
+          env: ...
+
+      - pattern-regex: >-
+          (\$\{\{[^\}]+\}\})
+
+      - focus-metavariable: $1
